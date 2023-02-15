@@ -1,0 +1,5 @@
+email: juancruzmarcante@gmail.com
+usuario: admin_ecommerce
+first name: Juan Cruz
+last name: Marcante
+contraseña: Programacion2023$

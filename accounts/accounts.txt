@@ -1,0 +1,3 @@
+El módulo de seguridad de Django utiliza usuario y contraseña para validar usuarios por defecto.
+En los Ecommerce es común que se use email y contraseña. Para modificar esto es necesario 'modificar' el código de Django.
+Esto lo haremos desde esta aplicación accounts desde la cual manipularemos lo relativo a seguridad del proyecto.

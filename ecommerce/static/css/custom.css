@@ -1,0 +1,63 @@
+.rate > input{
+    display: none;
+}
+
+.rate{
+    display: inline-block;
+    border: 0;
+}
+
+.rate > label {
+    float: right;
+}
+
+/*Estilos para estrellas enteras*/
+.rate > label:before{
+    display: inline-block;
+    font-size: 1.1rem;
+    /*Hay que importar estos estilos*/
+    font-family: FontAwesome;
+    /*Le damos la forma de estrella*/
+    content: "\f005";
+    margin: 0;
+    padding: 0.3rem 0.2rem;
+    cursor: pointer;
+}
+
+/*Estilos para estrellas a la mitad*/
+.rate .half:before{
+    content: "\f089";
+    position: absolute;
+    padding-right: 0; 
+}
+
+/*Estilos para que las estrellas se pinten de amarillo cuando el usuario coloque el cursor encima de estas*/
+input:checked ~ label, label:hover ~ label{
+    color: #ffb503
+}
+
+input:checked + label:hover, input:checked ~ label:hover, input:checked ~ label:hover ~ label,
+label:hover ~ inpput:checked ~ label{
+    color: #CC9000;
+}
+
+.rating-star i{
+    color: #ffb503 !important;
+}
+
+ul.thumb{
+    margin: 0 auto;
+    padding: 0;
+    float: left;
+}
+
+ul.thumb li{
+    list-style: none;
+    margin: 10px;
+}
+
+ul.thumb li img{
+    width: 80px;
+    height: 80px;
+    border: 1px solid gray;
+}

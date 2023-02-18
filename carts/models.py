@@ -14,15 +14,18 @@ class Cart(models.Model):
 
 #Elemento o producto que se elige y agrega al carrito
 class CartItem(models.Model):
+    #Establecemos las relaciones con las tablas de usuario y producto
     user = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     #Almacenamos las variaciones como color y talle en el carrito de compras
     variations = models.ManyToManyField(Variation, blank=True)
 
+    #Establecemos las relaciones con la tabla carrito
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, null=True)
     quantity = models.IntegerField()
     is_active = models.BooleanField(default=True)
 
+    #Devolvemos un subtotal sin impuestos (tax)
     def sub_total(self):
         return self.product.price * self.quantity
 

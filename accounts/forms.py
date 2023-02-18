@@ -1,6 +1,7 @@
 from django import forms
 from .models import Account, UserProfile
 
+#Formulario para el registro de usuarios nuevos
 class RegistrationForm(forms.ModelForm):
     #Personalizamos campos de password
     password = forms.CharField(widget=forms.PasswordInput(attrs={
@@ -8,12 +9,13 @@ class RegistrationForm(forms.ModelForm):
         'class': 'form-control'
     }))
 
+    #Personalizamos campos de confirmación password
     confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={
         'placeholder': 'Confirme Constraseña',
         'class': 'form-control'
     }))
 
-    
+    #Modificamos el comportamiento del modelo Account para nuestro formulario
     class Meta:
         model = Account
         fields = ['first_name', 'last_name', 'phone_number', 'email', 'password']
@@ -38,6 +40,7 @@ class RegistrationForm(forms.ModelForm):
                 "La contraseña ingresada no coincide. Vuelva a ingresarla."
             )
 
+#Formulario para el usuario
 class UserForm(forms.ModelForm):
     class Meta:
         model = Account
@@ -49,6 +52,7 @@ class UserForm(forms.ModelForm):
             self.fields[field].widget.attrs['class']='form-control'
 
 
+#Formulario para el perfil de usuario
 class UserProfileForm(forms.ModelForm):
     profile_picture = forms.ImageField(required=False, error_messages = {'invalid': ('Solo archivos de imagen')}, widget=forms.FileInput)
     class Meta:

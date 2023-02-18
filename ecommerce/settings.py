@@ -41,11 +41,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #Las aplicaciones creadas para el proyecto son las siguientes:
+    #Category: permite la gestión de las categorías de productos las cuales actúan como filtro
     'category',
+    #Accounts: esta app gestiona a los usuarios (comunes y admin)
     'accounts',
+    #Store: gestiona todo lo realtivo a la tienda
     'store',
+    #Carts: gestiona todo lo relativo al carrito de compras
     'carts',
+    #Orders: gestiona todo lo relativo a las órdenes de compra
     'orders',
+    #admin_honeypot es una app creada en base a el paquete django-admin-honeypot es una
+    #pantalla de inicio de sesión de administrador de Django falsa para registrar y notificar
+    # a los administradores sobre intentos de acceso no autorizado. Se instala con pip install django-admin-honeypot
     'admin_honeypot',
 ]
 
@@ -62,7 +71,7 @@ MIDDLEWARE = [
     'django_session_timeout.middleware.SessionTimeoutMiddleware',
 ]
 
-#Seteamos el tiempo en segundos que la sesión permanecera abierta con el usuario inactivo
+#Seteamos el tiempo en segundos que la sesión permanecer abierta con el usuario inactivo
 SESSION_EXPIRE_SECONDS = 3600
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
 SESSION_TIMEOUT_REDIRECT = 'accounts/login'
@@ -72,6 +81,7 @@ ROOT_URLCONF = 'ecommerce.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        #Dentro del directorio templates se encuentran todos los archivos html necesario para el proyecto
         'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -90,7 +100,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
-#Elegimos nuestro modelo de autorización
+#Elegimos nuestro modelo de autorización, el cual está definido por la app accounts con su clase Account dentro del archivo models.py
 AUTH_USER_MODEL = 'accounts.Account'
 
 
@@ -150,13 +160,14 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR /'media'
 
-#Mensajes Persoanalizados
+#Mensajes Personalizados
 from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
     messages.ERROR : 'danger'
 }
 
 #Usamos el servidor de gmail para enviar el correo electrónico porque de gmail es el mail del superadmin
+#Por seguridad, estos datos sensibles se encuentran en un archivo .env en la raíz del proyecto al cual git ignora según está definido en el archivo .gitignore
 EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_PORT = config('EMAIL_PORT', cast = int)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')

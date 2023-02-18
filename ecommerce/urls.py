@@ -27,9 +27,12 @@ urlpatterns = [
     path('securelogin/', admin.site.urls),
     #Instalamos el módulo django-admin-honeypot para proporcionarle a posibles hackers una url del admin falsa
     path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
+    #Una url vacía lleva automáticamente al home
     path('', views.home, name='home'),
+    #Las url de las aplicaciones son las sioguientes
     path('store/', include('store.urls')),
     path('cart/', include('carts.urls')),
     path('accounts/', include('accounts.urls')),
     path('orders/', include('orders.urls')),
+    #A continuación se incluyen las url para los archivos estáticos
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

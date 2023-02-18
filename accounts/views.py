@@ -16,11 +16,17 @@ from carts.models import Cart, CartItem
 import requests
 
 # Create your views here.
+#La función register permite el registro de nuevos usuarios
 def register(request):
+    #Elegimos el formulario RegistrationForm el cual debe ser importado
     form = RegistrationForm()
+    #El métos que mos debe pasar el formulario desde el template es post
     if request.method == 'POST':
+        #El formulario toma los datos enviados desde el template
         form = RegistrationForm(request.POST)
+        #validamos los datos
         if form.is_valid():
+            #Guardamos los datos enviados en el formulario en variables
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
             phone_number = form.cleaned_data['phone_number']
@@ -28,18 +34,22 @@ def register(request):
             password = form.cleaned_data['password']
             #Genermos el username a partir del correo electrónico. No existe en la base de datos en la realidad
             username = email.split('@')[0]
+            #Registramos al usuario nuevo con los datos pasados a través del formulario
             user = Account.objects.create_user(first_name=first_name, last_name=last_name, email=email, username=username, password=password)
             user.phone_number = phone_number
+            #Guardamos el usuario creado en la base de datos
             user.save()
 
             #Creación del UserProfile en la tabla
             profile = UserProfile()
             profile.user_id = user.id
+            #El perfil se crea automáticamente con una foto estándar, luego puede ser modificada
             profile.profile_picture = 'default/default-user.png'
+            #Guardamos el perfil en la base de datos
             profile.save() 
 
             #Activación de usuario con envío de mail
-            #Definimos la url donde el usuario debe darlo click cuando le llegue el mail
+            #Definimos la url donde el usuario debe darle click cuando le llegue el mail
             current_site = get_current_site(request)
             #Asunto del email
             mail_subject = 'Por favor, active su cuenta.'
@@ -59,7 +69,7 @@ def register(request):
             send_email.send()
 
 
-            #messages.success(request, 'Se registró el usuario exitosamente.')
+            messages.success(request, 'Se registró el usuario exitosamente.')
             return redirect('/accounts/login/?command=verification&email='+email)
 
     context = {
@@ -67,11 +77,15 @@ def register(request):
     }
     return render(request, 'accounts/register.html', context)
 
+#Función para login 
 def login(request):
+    #Desde el template se envía el método post
     if request.method == 'POST':
+        #Guardamos los datos de login en variables
         email = request.POST['email']
         password = request.POST['password']
 
+        #Autenticamos y verificamos que coincidan
         user = auth.authenticate(email=email, password=password)
 
         if user is not None:
@@ -116,7 +130,7 @@ def login(request):
             auth.login(request, user)
             messages.success(request, 'Has iniciado sesión.')
             #Cuando el usuario arma un carrito sin haber iniciado sesión y luego le da a pagar, queremos que el sitio
-            #lo redirecciones automáticamente a checkout y no al dashboard
+            #lo redireccione automáticamente a checkout y no al dashboard del usuario
             url = request.META.get('HTTP_REFERER')
             #Capturamos el parámetro
             try:
@@ -136,7 +150,7 @@ def login(request):
 
     return render(request, 'accounts/login.html')
 
-#El login es requerido
+#Esta función permite salir de sesión y el login es requerido
 @login_required(login_url='login')
 def logout(request):
     auth.logout(request)
@@ -145,7 +159,7 @@ def logout(request):
     return redirect('login')
 
 
-#Función para activar centa a través de email
+#Función para activar cuenta a través de email
 def activate(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
@@ -153,18 +167,24 @@ def activate(request, uidb64, token):
     except(TypeError, ValueError, OverflowError, Account.DoesNotExist):
         user = None
 
+    #Si los datos son válidos
     if user is not None and default_token_generator.check_token(user, token):
+        #Modificamos el estado del usuario y guardamos en la base de datos
         user.is_active = True
         user.save()
         messages.success(request, 'Tu cuenta ha sido activada')
         return redirect('login')
+    #En caso de que los datos no sean válidos, redirigimos al register
     else:
         messages.error(request, 'La activación no fue realizada')
         return redirect('register')
 
+#Con esta función el usuario puede visualizar su dashboard o tablero personal
 @login_required(login_url='login')
 def dashboard(request):
+    #Creamos el objeto orders ordenado según fecha y filtramos según el id del usuario y según hayan sido ordenados o no
     orders = Order.objects.order_by('-created_at').filter(user_id = request.user.id, is_ordered = True)
+    #Calculamos la cantidad de órdenes realizadas por el usuario
     orders_count = orders.count()
 
     userprofile = UserProfile.objects.get(user_id = request.user.id)
@@ -175,12 +195,14 @@ def dashboard(request):
 
     return render(request, 'accounts/dashboard.html', context)
 
+#Con esta función el usuario puede recuperar su contraseña
 def forgotPassword(request):
     if request.method == 'POST':
         email = request.POST['email']
         if Account.objects.filter(email=email).exists():
             user = Account.objects.get(email__exact=email)
 
+            #Creación y envío del mail
             current_site = get_current_site(request)
             mail_subject = 'Restablecer Contraseña'
             body = render_to_string('accounts/reset_password_email.html', {

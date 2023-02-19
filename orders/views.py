@@ -11,10 +11,14 @@ from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 
 # Create your views here.
+#Función para crear los pagos
 def payments(request):
+    #Almacenamos en una variable los datos del pago
     body = json.loads(request.body)
+    #Buscamos la órden a la cual corresponde el pago
     order = Order.objects.get(user = request.user, is_ordered = False, order_number = body['orderID'])
 
+    #Instanciamos el pago con sus datos
     payment = Payment(
         user = request.user,
         payment_id = body['transID'],
@@ -22,8 +26,10 @@ def payments(request):
         amount_id = order.order_total,
         status = body['status'],
     )
+    #Guardamos el pago
     payment.save()
 
+    #Asociamos el pago a la órden, cambiamos el estado de la órden y guardamos
     order.payment = payment
     order.is_ordered = True
     order.save()
@@ -73,22 +79,27 @@ def payments(request):
 
     return JsonResponse(data)
 
-
+#Función para realizar el pedido
 def place_order(request, total = 0, quantity = 0):
+    #Tomamos los datos del usuario y su carrito
     current_user = request.user
     cart_items = CartItem.objects.filter(user=current_user)
     cart_count = cart_items.count()
 
+    #Retornamos a store si no hay carrito
     if cart_count <= 0:
         return redirect('store')
     
+    #Ponemos en cero el total y el impuesto
     grand_total = 0
     tax = 0
 
+    #Calculamos el total y la cantidad para los artículos dentro del carrito
     for cart_item in cart_items:
         total += (cart_item.product.price * cart_item.quantity)
         quantity += cart_item.quantity
     
+    #Cáclulo de impuesto IVA 21% y el total a pagar
     tax = (21 * total)/100
     grand_total = total + tax
 

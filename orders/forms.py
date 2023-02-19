@@ -2,7 +2,7 @@ from django import forms
 from .models import Order
 
 class OrderForm(forms.ModelForm):
-
+    #Determinamos los campos que tendrá el formulario para las órdenes de compra
     class Meta:
         model = Order
         fields = ['first_name',

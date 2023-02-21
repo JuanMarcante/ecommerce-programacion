@@ -22,7 +22,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">Total de Órdenes</h5>
                                 <h4>{{orders_count}}</h4>
-                                <a href="#">Ver Órdenes</a>
+                                <a class="{% if '/my_orders/' in request.path %} active {% endif %}" href="{% url 'my_orders' %}">Ver Órdenes</a>
                             </div>
                         </div>
                     </div>

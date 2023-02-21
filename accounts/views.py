@@ -118,7 +118,7 @@ def login(request):
                             item.quantity += 1
                             item.user = user
                             item.save()
-                        #En caso de artículos que no coincidan, actualizamos cart_item y le asignamos el usuario al item
+                        #En caso de que los artículos que no coincidan, actualizamos cart_item y le asignamos el usuario al item
                         else:
                             cart_item = CartItem.objects.get(cart=cart)
                             for item in cart_item:
@@ -305,10 +305,10 @@ def edit_profile(request):
 @login_required(login_url='login')
 def change_password(request):
     if request.method == 'POST':
-        #Tomamos los datos enviados ´por el usuario
+        #Tomamos los datos enviados por el usuario
         current_password = request.POST['current_password']
         new_password = request.POST['new_password']
-        confirm_password = request.POSt['confirm_password']
+        confirm_password = request.POST['confirm_password']
 
         #Tomamos la cuenta del usuario
         user = Account.objects.get(username__exact = request.user.username)
